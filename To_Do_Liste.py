@@ -1,5 +1,12 @@
 import os
 
+task_list = []
+def neuesdic():
+	task_list.append({"text": "", "erledigt": False})
+
+def headline(punkt):
+	return "\n" + menü_optionen[punkt - 1] + "\n (back um zum Hauptmenü zurückzukehren)"
+
 def hauptmenü():
 	print("Hauptmenü ≣\n")
 	i = 0
@@ -18,6 +25,12 @@ def menü_abfrage():
 	print("\n") 
 	auswahl = input("Auswahl: ")
 	return auswahl
+
+def emoji(aufgb):
+    if aufgb["erledigt"] == True:
+            return("✅")
+    else:
+        return("❌")	
 	
 def menü_task_add():
 	print(headline(1))
@@ -27,15 +40,15 @@ def menü_task_add():
 				clear()
 				return
 		else:
-			task_list.append(neue_task)
+			länge = len(task_list)
+			neuesdic()
+			task_list[länge]["text"] = neue_task
 			clear()
 			print("\nTask hinzugefügt ✅\n")
 		
 def show_tasks():
-	i = 0
-	for task in task_list:
-		i += 1
-		print(f"{i}. {task}")
+	for i, task in enumerate(task_list, start=1):
+		print(str(i) +"." + task["text"]+": " + emoji(task))
 		
 def zurück_hauptmenü():
 	while True:
@@ -51,11 +64,27 @@ def menü_task_show():
 	zurück_hauptmenü()
 	return
 
-#def menü_task_completed():
-#	clear()
-#	show_tasks()
-#	while True:
-#		break
+def menü_task_completed():
+	clear()
+	print(headline(3))
+	show_tasks()
+	while True:
+		eingabe = input("Wähle die erledigte task aus, mit zb. 1, 3...: ")
+		if eingabe == "back":
+			clear
+			return
+		try:
+			eingabe = int(eingabe)
+			if eingabe <= len(task_list):
+				task_list[eingabe -1]["erledigt"] = True
+				clear
+				print(headline(3))
+				show_tasks()
+			else:
+				print("Du musst eine Zahl angeben die zu einer task gehört.") 
+		except:
+			print("Du musst die Task mit einer Ganzzahl auswählen")
+
 
 
 def menü_task_deleted():
@@ -80,14 +109,11 @@ def menü_task_deleted():
 				print(headline(4))
 				show_tasks()
 
-def headline(punkt):
-	return "\n" + menü_optionen[punkt - 1] + "\n (back um zum Hauptmenü zurückzukehren)"
+
 	
 menü_optionen = ["Aufgabe hinzufügen", "Alle Aufgaben anzeigen", "Aufgabe als erledigt makieren", "Aufgabe löschen", "Programm beenden"]
 
-task_list = []
-#for task in task_list:
-#	task_list.join("❌")
+
 
 def hauptmenü_active():
 	while True:
@@ -102,7 +128,7 @@ def hauptmenü_active():
 			menü_task_show()
 		elif auswahl == "3":
 			clear()
-			#menü_task_completed()
+			menü_task_completed()
 		elif auswahl == "4":
 			clear()
 			menü_task_deleted()
